@@ -3,9 +3,10 @@ package jp.co.ogis_ri.nautible.app.order.inbound.rest;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import javax.validation.Valid;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
@@ -40,7 +41,7 @@ public class RestCartServiceImpl implements RestCartService {
     }
 
     @Override
-    public Response create(@Valid RestCart cart) {
+    public Response create(@Valid @NotNull RestCart cart) {
         executeDaprClient(
                 c -> c.saveState(STATE_STORE_NAME, createKey(cart.getId()),
                         cart).block());
@@ -48,7 +49,7 @@ public class RestCartServiceImpl implements RestCartService {
     }
 
     @Override
-    public Response update(@Valid RestCart cart) {
+    public Response update(@Valid @NotNull RestCart cart) {
         return create(cart);
     }
 

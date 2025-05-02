@@ -3,9 +3,9 @@ package jp.co.ogis_ri.nautible.app.order.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class OrderService {
