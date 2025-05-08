@@ -2,13 +2,15 @@ package jp.co.ogis_ri.nautible.app.order.inbound.rest;
 
 import java.util.function.Function;
 import java.util.logging.Logger;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Inject;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import jakarta.inject.Inject;
 
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
@@ -17,7 +19,6 @@ import jp.co.ogis_ri.nautible.app.order.api.rest.RestCart;
 import jp.co.ogis_ri.nautible.app.order.api.rest.RestCartService;
 import jp.co.ogis_ri.nautible.app.order.core.rest.MDC;
 import reactor.core.publisher.Mono;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * REST APIのカートサービス。REST APIのエンドポイント。
@@ -41,33 +42,34 @@ public class RestCartServiceImpl implements RestCartService {
         RestCart result = executeDaprClient(c -> {
             try {
                 // 文字列として取得
-                State<String> retrievedState = c.getState(STATE_STORE_NAME, createKey(cartId),
-                        String.class).block();
-                
-                if (retrievedState == null || retrievedState.getValue() == null) {
+                Mono<State<String>> retrievedMessageMono = c.getState(STATE_STORE_NAME, createKey(cartId), String.class);
+                State<String> state = retrievedMessageMono.block();
+
+                if (state == null || state.getValue() == null) {
                     return null;
                 }
-                
-                // 文字列をRestCartオブジェクトに変換
-                return objectMapper.readValue(retrievedState.getValue(), RestCart.class);
+
+                // JSON文字列をRestCartオブジェクトに変換
+                return objectMapper.readValue(state.getValue(), RestCart.class);
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "カートデータの取得中にエラーが発生しました", e);
+                LOG.severe("データ取得中にエラーが発生しました: " + e.getMessage());
                 throw new RuntimeException(e);
             }
         });
-        
+
         return Response.ok(result).build();
     }
+
 
     @Override
     public Response create(@Valid @NotNull RestCart cart) {
         executeDaprClient(c -> {
             try {
-                // RestCartオブジェクトをJSON文字列に変換
+                // RestCartオブジェクトをJSON文字列に変換して保存
                 String jsonValue = objectMapper.writeValueAsString(cart);
                 return c.saveState(STATE_STORE_NAME, createKey(cart.getId()), jsonValue).block();
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, "カートデータの保存中にエラーが発生しました", e);
+                LOG.severe("データ保存中にエラーが発生しました: " + e.getMessage());
                 throw new RuntimeException(e);
             }
         });
