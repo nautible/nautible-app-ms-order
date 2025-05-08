@@ -56,8 +56,7 @@ public class RestCartServiceImpl implements RestCartService {
             }
         });
         
-        return result == null ? Response.status(Status.NOT_FOUND).build() :
-            Response.ok(result).build();
+        return Response.ok(result).build();
     }
 
     @Override
