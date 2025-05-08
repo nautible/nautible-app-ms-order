@@ -40,11 +40,19 @@ public class RestCartServiceImpl implements RestCartService {
         metadata.put("contentType", "application/json");
         GetStateRequest request = new GetStateRequest(STATE_STORE_NAME, createKey(cartId));
         request.setMetadata(metadata);
-        RestCart result = executeDaprClient(c -> {
-            Mono<State<RestCart>> retrievedMessageMono = c.getState(request, new TypeRef<RestCart>() {});
-            return retrievedMessageMono.block().getValue();
-        });
-        return Response.ok(result).build();
+        try {
+            RestCart result = executeDaprClient(c -> {
+                Mono<State<RestCart>> retrievedMessageMono = c.getState(STATE_STORE_NAME, createKey(cartId), RestCart.class);
+                return retrievedMessageMono.block().getValue();
+            });
+            return Response.ok(result).build();
+        } catch (Exception e) {
+            RestCart result = executeDaprClient(c -> {
+                Mono<State<RestCart>> retrievedMessageMono = c.getState(request, new TypeRef<RestCart>() {});
+                return retrievedMessageMono.block().getValue();
+            });
+            return Response.ok(result).build();
+        }
     }
 
     @Override
