@@ -3,8 +3,8 @@ package jp.co.ogis_ri.nautible.app.order.outbound.rest;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;

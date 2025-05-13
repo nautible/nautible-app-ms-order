@@ -17,7 +17,7 @@
     <!-- rest -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy</artifactId>
+      <artifactId>quarkus-rest</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -41,7 +41,7 @@
     <!-- json -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jsonb</artifactId>
+      <artifactId>quarkus-rest-jsonb</artifactId>
     </dependency>
     <!-- openapi -->
     <dependency>
@@ -105,6 +105,31 @@
       <artifactId>dapr-sdk</artifactId>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
+    <dependency>
+        <groupId>jakarta.validation</groupId>
+        <artifactId>jakarta.validation-api</artifactId>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api -->
+    <dependency>
+        <groupId>jakarta.annotation</groupId>
+        <artifactId>jakarta.annotation-api</artifactId>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.interceptor/jakarta.interceptor-api -->
+    <dependency>
+        <groupId>jakarta.interceptor</groupId>
+        <artifactId>jakarta.interceptor-api</artifactId>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api -->
+    <dependency>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.enterprise/jakarta.enterprise.cdi-api -->
+    <dependency>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -178,7 +203,7 @@
                     <generatePom>false</generatePom>
                     <hideGenerationTimestamp>true</hideGenerationTimestamp>
                     <interfaceOnly>true</interfaceOnly>
-                    <java8>true</java8>
+                    <useJakartaEe>true</useJakartaEe>
                     <!-- if set quarkus, gen application.properties with mp.openapi.scan.disable=true, -->
                     <!-- and gen Dockerfile.jvm, Dockerfile.native -->
                     <!-- library>quarkus</library -->
@@ -192,7 +217,7 @@
                     <!-- if true, api classname change to tagname. -->
                     <useTags>true</useTags>
                   </configOptions>
-
+                  <ignoreFileOverride>.openapi-generator-ignore</ignoreFileOverride>
               </configuration>
            </execution>
             <execution>
@@ -223,7 +248,7 @@
                       <generatePom>false</generatePom>
                       <hideGenerationTimestamp>true</hideGenerationTimestamp>
                       <interfaceOnly>true</interfaceOnly>
-                      <java8>true</java8>
+                      <useJakartaEe>true</useJakartaEe>
                       <!-- if set quarkus, gen application.properties with mp.openapi.scan.disable=true, -->
                       <!-- and gen Dockerfile.jvm, Dockerfile.native -->
                       <!-- library>quarkus</library -->
@@ -237,6 +262,7 @@
                       <!-- if true, api classname change to tagname. -->
                       <useTags>true</useTags>
                     </configOptions>
+                    <ignoreFileOverride>.openapi-generator-ignore</ignoreFileOverride>
                 </configuration>
              </execution>
              <execution>
@@ -267,7 +293,7 @@
                        <generatePom>false</generatePom>
                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
                        <interfaceOnly>true</interfaceOnly>
-                       <java8>true</java8>
+                       <useJakartaEe>true</useJakartaEe>
                        <!-- if set quarkus, gen application.properties with mp.openapi.scan.disable=true, -->
                        <!-- and gen Dockerfile.jvm, Dockerfile.native -->
                        <!-- library>quarkus</library -->
@@ -281,6 +307,7 @@
                        <!-- if true, api classname change to tagname. -->
                        <useTags>true</useTags>
                      </configOptions>
+                     <ignoreFileOverride>.openapi-generator-ignore</ignoreFileOverride>
                  </configuration>
              </execution>
              <execution>
@@ -289,17 +316,17 @@
                      <goal>generate</goal>
                  </goals>
                  <configuration>
-                     <!-- verbose>true</verbose -->
-                     <inputSpec>${project.basedir}/src/main/openapi/payment.yaml</inputSpec>
-                     <output>${project.basedir}/target/generated-sources</output>
-                     <generatorName>jaxrs-spec</generatorName>
-                     <additionalProperties>
+                    <!-- verbose>true</verbose -->
+                    <inputSpec>${project.basedir}/src/main/openapi/payment.yaml</inputSpec>
+                    <output>${project.basedir}/target/generated-sources</output>
+                    <generatorName>jaxrs-spec</generatorName>
+                    <additionalProperties>
                        <additionalProperty>modelNamePrefix=</additionalProperty>
                        <additionalProperty>modelNameSuffix=</additionalProperty>
                        <additionalProperty>apiNamePrefix=</additionalProperty>
                        <additionalProperty>apiNameSuffix=</additionalProperty>
-                     </additionalProperties>
-                     <configOptions>
+                    </additionalProperties>
+                    <configOptions>
                        <!-- https://openapi-generator.tech/docs/generators/jaxrs-spec/ -->
                        <sourceFolder>openapi</sourceFolder>
                        <invokerPackage>jp.co.ogis_ri.nautible.app.payment.client.rest</invokerPackage>
@@ -311,7 +338,7 @@
                        <generatePom>false</generatePom>
                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
                        <interfaceOnly>true</interfaceOnly>
-                       <java8>true</java8>
+                       <useJakartaEe>true</useJakartaEe>
                        <!-- if set quarkus, gen application.properties with mp.openapi.scan.disable=true, -->
                        <!-- and gen Dockerfile.jvm, Dockerfile.native -->
                        <!-- library>quarkus</library -->
@@ -324,7 +351,8 @@
                        <useSwaggerAnnotations>true</useSwaggerAnnotations>
                        <!-- if true, api classname change to tagname. -->
                        <useTags>true</useTags>
-                     </configOptions>
+                    </configOptions>
+                    <ignoreFileOverride>.openapi-generator-ignore</ignoreFileOverride>
                  </configuration>
               </execution>
         </executions>

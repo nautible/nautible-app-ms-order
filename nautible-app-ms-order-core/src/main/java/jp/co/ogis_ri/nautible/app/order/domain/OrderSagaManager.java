@@ -1,7 +1,7 @@
 package jp.co.ogis_ri.nautible.app.order.domain;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * 注文のSAGAマネージャ

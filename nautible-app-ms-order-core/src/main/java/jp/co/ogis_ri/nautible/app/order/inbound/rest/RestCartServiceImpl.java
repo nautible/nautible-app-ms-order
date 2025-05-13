@@ -2,14 +2,19 @@ package jp.co.ogis_ri.nautible.app.order.inbound.rest;
 
 import java.util.function.Function;
 import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.validation.Valid;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import io.dapr.client.DaprClient;
 import io.dapr.client.DaprClientBuilder;
 import io.dapr.client.domain.State;
+import io.dapr.client.domain.GetStateRequest;
+import io.dapr.utils.TypeRef;
 import jp.co.ogis_ri.nautible.app.order.api.rest.RestCart;
 import jp.co.ogis_ri.nautible.app.order.api.rest.RestCartService;
 import jp.co.ogis_ri.nautible.app.order.core.rest.MDC;
@@ -31,16 +36,27 @@ public class RestCartServiceImpl implements RestCartService {
 
     @Override
     public Response getByCartId(Integer cartId) {
-        RestCart result = executeDaprClient(c -> {
-            Mono<State<RestCart>> retrievedMessageMono = c.getState(STATE_STORE_NAME, createKey(cartId),
-                    RestCart.class);
-            return retrievedMessageMono.block().getValue();
-        });
-        return Response.ok(result).build();
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("contentType", "application/json");
+        GetStateRequest request = new GetStateRequest(STATE_STORE_NAME, createKey(cartId));
+        request.setMetadata(metadata);
+        try {
+            RestCart result = executeDaprClient(c -> {
+                Mono<State<RestCart>> retrievedMessageMono = c.getState(STATE_STORE_NAME, createKey(cartId), RestCart.class);
+                return retrievedMessageMono.block().getValue();
+            });
+            return Response.ok(result).build();
+        } catch (Exception e) {
+            RestCart result = executeDaprClient(c -> {
+                Mono<State<RestCart>> retrievedMessageMono = c.getState(request, new TypeRef<RestCart>() {});
+                return retrievedMessageMono.block().getValue();
+            });
+            return Response.ok(result).build();
+        }
     }
 
     @Override
-    public Response create(@Valid RestCart cart) {
+    public Response create(@Valid @NotNull RestCart cart) {
         executeDaprClient(
                 c -> c.saveState(STATE_STORE_NAME, createKey(cart.getId()),
                         cart).block());
@@ -48,7 +64,7 @@ public class RestCartServiceImpl implements RestCartService {
     }
 
     @Override
-    public Response update(@Valid RestCart cart) {
+    public Response update(@Valid @NotNull RestCart cart) {
         return create(cart);
     }
 

@@ -6,13 +6,14 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-import javax.validation.Validator;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.inject.Inject;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import jakarta.validation.Validator;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -46,7 +47,7 @@ public class RestOrderServiceImpl implements RestOrderService {
     Validator validator;
 
     @Override
-    public Response create(@Valid RestCreateOrderRequest request) {
+    public Response create(@Valid @NotNull RestCreateOrderRequest request) {
         final Order ret = service.create(mapper.restCreateOrderRequestToOrder(request));
         return Response.ok(mapper.orderToRestOrder(ret)).build();
     }
@@ -72,7 +73,7 @@ public class RestOrderServiceImpl implements RestOrderService {
     }
 
     @Override
-    public Response update(@Valid RestUpdateOrderRequest request) {
+    public Response update(@Valid @NotNull RestUpdateOrderRequest request) {
         Order orderRet = service.update(mapper.restUpdateOrderRequestToOrder(request));
         return orderRet == null ? Response.status(Status.NOT_FOUND).build()
                 : Response.ok(mapper.orderToRestUpdateOrderResponse(orderRet)).build();
