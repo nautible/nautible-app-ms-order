@@ -17,7 +17,6 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
       contents: read
 
     timeout-minutes: 60
@@ -47,6 +46,7 @@ jobs:
     environment: develop # for azure oidc
 
     permissions:
+      id-token: write
       contents: read
 
     env:
